@@ -47,11 +47,14 @@ type Result struct {
 }
 
 type Monitor interface {
+	GetID() string
+	GetContext() context.Context
+	Start(ctx context.Context)
+	Stop()
+	IsRunning() bool
+	SetRunning(bool)
 	Check(ctx context.Context) Result
 	GetHBInterval() time.Duration
 	GetLastHB() time.Time
-	SetLastHB(hbTime time.Time)
-	IsRunning() bool
-	SetRunning(b bool)
-	GetID() string
+	SetLastHB(time.Time)
 }
