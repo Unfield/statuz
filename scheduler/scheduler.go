@@ -5,6 +5,7 @@ import (
 	"log"
 	"time"
 
+	"github.com/Unfield/Statuz/logger"
 	"github.com/Unfield/Statuz/monitors"
 )
 
@@ -12,6 +13,7 @@ type Scheduler struct {
 	ctx           context.Context
 	monitors      []monitors.Monitor
 	ResultChannel chan monitors.Result
+	logger        logger.Logger
 }
 
 func NewScheduler(ctx context.Context, ms []monitors.Monitor) *Scheduler {
@@ -19,6 +21,7 @@ func NewScheduler(ctx context.Context, ms []monitors.Monitor) *Scheduler {
 		ctx:           ctx,
 		monitors:      ms,
 		ResultChannel: make(chan monitors.Result, 100),
+		logger:        logger.NewLogger(),
 	}
 }
 
@@ -35,7 +38,7 @@ func (s *Scheduler) runMonitorLoop(m monitors.Monitor) {
 	ticker := time.NewTicker(m.GetHBInterval())
 	defer ticker.Stop()
 
-	log.Printf("[Scheduler] Started monitor %v (interval: %v)", m.GetID(), m.GetHBInterval())
+	s.logger.Infof("📡 [Scheduler] Started monitor %v (interval: %v)", m.GetID(), m.GetHBInterval())
 
 	s.performCheck(m)
 
@@ -46,7 +49,7 @@ func (s *Scheduler) runMonitorLoop(m monitors.Monitor) {
 				go s.performCheck(m)
 			}
 		case <-s.ctx.Done():
-			log.Printf("[Scheduler] Stopping monitor %v", m.GetID())
+			s.logger.Infof("[Scheduler] Stopping monitor %v", m.GetID())
 			return
 		}
 	}

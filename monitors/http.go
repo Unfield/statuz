@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	DEGRADED_DEFAULT_THRESHHOLD = 2000
+	DEGRADED_DEFAULT_THRESHHOLD = 2000 * time.Millisecond
 )
 
 // TODO: add zap for logging
@@ -26,7 +26,7 @@ type HTTPMonitor struct {
 	AcceptedStatusCodes []int         `json:"accepted_status_codes"`
 	IPFamily            string        `json:"ip_family"`
 	HTTPMethod          string        `json:"http_method"`
-	DegradedThreshhold  int           `json:"degraded_threshold"`
+	DegradedThreshold   time.Duration `json:"degraded_threshold"`
 	lastHB              time.Time
 	running             bool
 }
@@ -84,12 +84,12 @@ PerformCheck:
 		Success:   checkResult.isUp,
 		CheckedAt: checkResult.start,
 	}
-	if m.DegradedThreshhold <= 0 {
-		m.DegradedThreshhold = DEGRADED_DEFAULT_THRESHHOLD
+	if m.DegradedThreshold <= 0 {
+		m.DegradedThreshold = DEGRADED_DEFAULT_THRESHHOLD
 	}
-	if checkResult.duration.Milliseconds() >= int64(m.DegradedThreshhold) {
+	if checkResult.duration >= m.DegradedThreshold {
 		res.Status = StatusDegraded
-		res.Message = fmt.Sprintf("Response slow: %v > %v", checkResult.duration.Milliseconds(), m.DegradedThreshhold)
+		res.Message = fmt.Sprintf("Response slow: %v > %v", checkResult.duration, m.DegradedThreshold)
 	}
 	return res
 }

@@ -15,6 +15,23 @@ const (
 	StatusWarning  Status = "warning"
 )
 
+func GetStatusIcon(status Status) string {
+	switch status {
+	case StatusUp:
+		return "✅"
+	case StatusDown:
+		return "❌"
+	case StatusDegraded:
+		return "🟠"
+	case StatusWarning:
+		return "⚠️"
+	case StatusUnknown:
+		return "❓"
+	default:
+		return "🔷"
+	}
+}
+
 type Result struct {
 	MonitorID string        `json:"monitor_id"`
 	Type      string        `json:"type"`
