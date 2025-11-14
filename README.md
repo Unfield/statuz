@@ -61,7 +61,7 @@ It aims to be **clear, reliable, and hackable** — a tool that just runs and wo
 
 ## 📡 Project Links
 - Website: [https://statuz.sh](https://statuz.sh) *(coming soon)*
-- GitHub: [github.com/Unfield/statuz](https://github.com/Unfield/statuz)
+- GitHub: [github.com/statuzlabs/statuz](https://github.com/statuzlabs/statuz)
 - License: MIT
 
 ---
